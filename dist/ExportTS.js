@@ -19,62 +19,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExportTSPlugin = exports.export_stuff = exports.iff = exports.Cond = void 0;
+exports.ExportTSPlugin = exports.export_stuff = void 0;
 const export_table_lib_1 = require("export-table-lib");
 const fs = __importStar(require("fs-extra"));
-class Cond {
-    constructor() {
-        this.lines = [];
-        this.finished = false;
-    }
-    if(cond, call) {
-        if (this.finished) {
-            return;
-        }
-        if (cond) {
-            this.finished = true;
-            let str = call();
-            this.lines.push(str);
-        }
-        return this;
-    }
-    elseif(cond, call) {
-        if (this.finished) {
-            return;
-        }
-        if (cond) {
-            this.finished = true;
-            let str = call();
-            this.lines.push(str);
-        }
-        return this;
-    }
-    else(call) {
-        if (this.finished) {
-            return;
-        }
-        this.finished = true;
-        let str = call();
-        this.lines.push(str);
-        return this;
-    }
-    toString() {
-        return this.lines.map(l => {
-            if (l.startsWith("\n")) {
-                l = l.substring(1);
-            }
-            if (l.endsWith("\n")) {
-                l = l.substring(0, l.length - 1);
-            }
-            return l;
-        }).join("");
-    }
-}
-exports.Cond = Cond;
-function iff(cond, call) {
-    return new Cond().if(cond, call);
-}
-exports.iff = iff;
 function export_stuff(paras) {
     var _a;
     let { datas, fields, name, objects, tables, } = paras;
@@ -236,7 +183,7 @@ function export_stuff(paras) {
     let mainField = (_a = fields.find(f => f.type == "uid")) !== null && _a !== void 0 ? _a : fields[0];
     let temp = `
 ${(0, export_table_lib_1.foreach)(fields, f => `
-${iff((f.type == "fk" || f.type == "fk[]") && f.fkTableName != name, () => `
+${(0, export_table_lib_1.iff)((f.type == "fk" || f.type == "fk[]") && f.fkTableName != name, () => `
 import ${f.fkTableName}, { ${f.fkTableName}Row } from "./${f.fkTableName}"
 `)}
 `).trim()}
@@ -258,8 +205,8 @@ ${(0, export_table_lib_1.foreach)(fields, f => `
          **/
         ${getFieldName(f.name)}:${getFieldType(f)} = ${getFieldDefault(f.type)}
 
-${iff(f.type == "fk", () => `
-${iff(getFkFieldType(f).toLowerCase() != "uid", () => `
+${(0, export_table_lib_1.iff)(f.type == "fk", () => `
+${(0, export_table_lib_1.iff)(getFkFieldType(f).toLowerCase() != "uid", () => `
         protected _fk${f.name}?:${f.fkTableName}Row[]=undefined
         /**
          * ${f.describe}
@@ -288,7 +235,7 @@ ${iff(getFkFieldType(f).toLowerCase() != "uid", () => `
         }
 `)}
 `)}
-${iff(f.type == "fk[]", () => `
+${(0, export_table_lib_1.iff)(f.type == "fk[]", () => `
         protected _fk${f.name}?:${f.fkTableName}Row[]=undefined
         /**
          * ${f.describe}
@@ -326,7 +273,7 @@ for (let record of rowData) {
     tableData.push(obj)
 }
 
-${iff(mapfield, () => `
+${(0, export_table_lib_1.iff)(mapfield, () => `
 export let ${mapName}:{
 	${(0, export_table_lib_1.foreach)(objects, o => `
     /** ${JSON.stringify(o)} */
@@ -336,7 +283,7 @@ export let ${mapName}:{
 
 for(let r of tableData){
     ${name} .push(r);
-	${iff(mapfield, () => `
+	${(0, export_table_lib_1.iff)(mapfield, () => `
     (${mapName} as any)[r. ${mapfield}.name ] =r;
 	`)}
 }

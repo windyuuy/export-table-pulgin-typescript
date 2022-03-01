@@ -1,62 +1,6 @@
 
-import { cmm, HandleSheetParams, Field, foreach, IPlugin, st, PluginBase, HandleBatchParams, OutFilePath } from "export-table-lib"
+import { cmm, HandleSheetParams, Field, foreach, IPlugin, st, PluginBase, HandleBatchParams, OutFilePath, iff } from "export-table-lib"
 import * as fs from "fs-extra"
-
-export class Cond {
-	protected lines: string[] = []
-	protected finished: boolean = false
-	if(cond: boolean, call: () => string) {
-		if (this.finished) {
-			return
-		}
-		if (cond) {
-			this.finished = true
-			let str = call()
-			this.lines.push(str)
-		}
-		return this
-	}
-
-	elseif(cond: boolean, call: () => string) {
-		if (this.finished) {
-			return
-		}
-		if (cond) {
-			this.finished = true
-			let str = call()
-			this.lines.push(str)
-		}
-		return this
-	}
-
-	else(call: () => string) {
-		if (this.finished) {
-			return
-		}
-		this.finished = true
-		let str = call()
-		this.lines.push(str)
-		return this
-	}
-
-	toString() {
-		return this.lines.map(l => {
-			if (l.startsWith("\n")) {
-				l = l.substring(1)
-			}
-			if (l.endsWith("\n")) {
-				l = l.substring(0, l.length - 1)
-			}
-			return l
-		}).join("")
-	}
-}
-
-export function iff(cond: boolean, call: () => string): Cond
-export function iff(cond: any, call: () => string): Cond
-export function iff(cond: boolean, call: () => string) {
-	return new Cond().if(cond, call)
-}
 
 export function export_stuff(paras: HandleSheetParams): string | null {
 	let {
