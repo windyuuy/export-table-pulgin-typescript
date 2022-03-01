@@ -1,1 +1,1 @@
-node E:\DATA\Projects\netease\export-table\dist\launch.js export src --one typescript:json dist --lib E:\DATA\Projects\netease
+node E:\DATA\Projects\netease\quicktable\export-table export src dist --tags typescript:json --libs E:\DATA\Projects\netease\quicktable

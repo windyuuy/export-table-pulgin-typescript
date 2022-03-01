@@ -1,5 +1,5 @@
 
-import { cmm, HandleSheetParams, Field, foreach, IPlugin, st, PluginBase, HandleBatchParams, OutFilePath } from "windy-quicktable"
+import { cmm, HandleSheetParams, Field, foreach, IPlugin, st, PluginBase, HandleBatchParams, OutFilePath } from "export-table-lib"
 import * as fs from "fs-extra"
 
 export function export_stuff(paras: HandleSheetParams): string | null {
