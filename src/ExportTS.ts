@@ -92,7 +92,7 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 		} else if (t == "number[]") {
 			return "number[]";
 		} else if (t == "uid") {
-			return "number";
+			return "uid";
 		} else if (t == "bool") {
 			return "boolean";
 		} else if (t == "bool[]") {

@@ -105,7 +105,7 @@ function export_stuff(paras) {
             return "number[]";
         }
         else if (t == "uid") {
-            return "number";
+            return "uid";
         }
         else if (t == "bool") {
             return "boolean";
