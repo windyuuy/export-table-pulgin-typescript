@@ -22,13 +22,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExportTSPlugin = exports.export_stuff = void 0;
+const chalk_1 = __importDefault(require("chalk"));
 const export_table_lib_1 = require("export-table-lib");
 const fs = __importStar(require("fs-extra"));
 function export_stuff(paras) {
     var _a;
-    let { datas, fields, name, objects, tables, } = paras;
+    let { datas, fields, name, objects, tables, table, } = paras;
     let RowClass = (0, export_table_lib_1.makeFirstLetterUpper)(name) + "Row";
     let initFunc = name + "Init";
     let mapfield = fields.find(a => a.type == "key"); //如果是map，则生成对应的map
@@ -63,10 +67,21 @@ function export_stuff(paras) {
             return "string[]";
         }
         else if (t == "fk") {
-            return "number";
+            let ffk = table.getFKField(f);
+            let fkType = getFieldType(ffk);
+            return fkType;
+            // return "number";
         }
         else if (t == "fk[]") {
-            return "number[]";
+            let ffk = table.getFKField(f);
+            let fkType = getFieldType(ffk);
+            if (typeof (fkType) == "string") {
+                if (fkType.match(/\w+/)) {
+                    return `${fkType}[]`;
+                }
+            }
+            return `(${fkType})[]`;
+            // return "number[]";
         }
         else if (t == "any") {
             return "any";
@@ -75,7 +90,8 @@ function export_stuff(paras) {
             return "string";
         }
         else {
-            throw new Error(`invalid type ${f.name}:<unkown>`);
+            console.error(chalk_1.default.red(`invalid type ${f.name}:<unkown>`));
+            return "never";
         }
         return t;
     };
@@ -85,7 +101,8 @@ function export_stuff(paras) {
         }
         return n;
     };
-    var getFieldDefault = function (t) {
+    var getFieldDefault = function (f) {
+        let t = f.type;
         if (t == "any") {
             return "undefined";
         }
@@ -108,7 +125,10 @@ function export_stuff(paras) {
             return "null as any";
         }
         else if (t == "fk") {
-            return 0;
+            // return 0;
+            let ffk = table.getFKField(f);
+            let defaultValue = getFieldDefault(ffk);
+            return defaultValue;
         }
         else if (t == "key") {
             return "\"\"";
@@ -144,7 +164,7 @@ ${(0, export_table_lib_1.foreach)(fields, f => `
         /**
          * ${f.describe}
          **/
-        ${getFieldName(f.name)}:${getFieldType(f)} = ${getFieldDefault(f.type)}
+        ${getFieldName(f.name)}: ${getFieldType(f)} = ${getFieldDefault(f)}
 
 ${(0, export_table_lib_1.iff)(f.type == "fk", () => `
 ${(0, export_table_lib_1.iff)(getFkFieldType(f).toLowerCase() != "uid", () => `

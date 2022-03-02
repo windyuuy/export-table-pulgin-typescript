@@ -1,4 +1,5 @@
 
+import chalk from "chalk";
 import { cmm, HandleSheetParams, Field, foreach, IPlugin, st, PluginBase, HandleBatchParams, OutFilePath, iff, makeFirstLetterUpper, makeFirstLetterLower } from "export-table-lib"
 import * as fs from "fs-extra"
 
@@ -9,6 +10,7 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 		name,
 		objects,
 		tables,
+		table,
 	} = paras;
 
 	let RowClass = makeFirstLetterUpper(name) + "Row"
@@ -16,7 +18,7 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 	let mapfield = fields.find(a => a.type == "key")//如果是map，则生成对应的map
 	let mapName = name + "Map"
 
-	let getFieldType = function (f: Field) {
+	let getFieldType = function (f: Field): string {
 		let t = f.type
 		if (t == "object") {
 			return "object"
@@ -37,15 +39,27 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 		} else if (t == "string[]") {
 			return "string[]";
 		} else if (t == "fk") {
-			return "number";
+			let ffk = table.getFKField(f)
+			let fkType = getFieldType(ffk!)
+			return fkType
+			// return "number";
 		} else if (t == "fk[]") {
-			return "number[]";
+			let ffk = table.getFKField(f)
+			let fkType = getFieldType(ffk!)
+			if (typeof (fkType) == "string") {
+				if (fkType.match(/\w+/)) {
+					return `${fkType}[]`
+				}
+			}
+			return `(${fkType})[]`
+			// return "number[]";
 		} else if (t == "any") {
 			return "any";
 		} else if (t == "key") {
 			return "string";
 		} else {
-			throw new Error(`invalid type ${f.name}:<unkown>`)
+			console.error(chalk.red(`invalid type ${f.name}:<unkown>`))
+			return "never"
 		}
 		return t;
 	}
@@ -57,7 +71,8 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 		return n;
 	}
 
-	var getFieldDefault = function (t: string) {
+	var getFieldDefault = function (f: Field): any {
+		let t = f.type
 		if (t == "any") {
 			return "undefined";
 		} else if (t == "uid") {
@@ -73,7 +88,10 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 		} else if (t == "object") {
 			return "null as any";
 		} else if (t == "fk") {
-			return 0;
+			// return 0;
+			let ffk = table.getFKField(f)
+			let defaultValue = getFieldDefault(ffk!)
+			return defaultValue
 		} else if (t == "key") {
 			return "\"\""
 		} else if (t.endsWith("[]")) {
@@ -109,7 +127,7 @@ ${foreach(fields, f => `
         /**
          * ${f.describe}
          **/
-        ${getFieldName(f.name)}:${getFieldType(f)} = ${getFieldDefault(f.type)}
+        ${getFieldName(f.name)}: ${getFieldType(f)} = ${getFieldDefault(f)}
 
 ${iff(f.type == "fk", () => `
 ${iff(getFkFieldType(f).toLowerCase() != "uid", () => `
