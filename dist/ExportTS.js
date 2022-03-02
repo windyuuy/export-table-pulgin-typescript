@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -25,15 +29,7 @@ const fs = __importStar(require("fs-extra"));
 function export_stuff(paras) {
     var _a;
     let { datas, fields, name, objects, tables, } = paras;
-    let firstLetterUpper = function (str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    };
-    let firstLetterLower = function (str) {
-        return str.charAt(0).toLowerCase() + str.slice(1);
-    };
-    let convMemberName = firstLetterUpper;
-    let convVarName = firstLetterLower;
-    let RowClass = firstLetterUpper(name) + "Row";
+    let RowClass = (0, export_table_lib_1.makeFirstLetterUpper)(name) + "Row";
     let initFunc = name + "Init";
     let mapfield = fields.find(a => a.type == "key"); //如果是map，则生成对应的map
     let mapName = name + "Map";
@@ -83,61 +79,6 @@ function export_stuff(paras) {
         }
         return t;
     };
-    const genValue = (value, f) => {
-        let t = f.type;
-        if (t == "object") {
-            return JSON.stringify(value);
-        }
-        else if (t == "object[]") {
-            return JSON.stringify(value);
-        }
-        else if (t == "number") {
-            return `${value}`;
-        }
-        else if (t == "number[]") {
-            let values = value;
-            return `[${values.join(", ")}]`;
-        }
-        else if (t == "uid") {
-            return `${value}`;
-        }
-        else if (t == "bool") {
-            return `${value}`;
-        }
-        else if (t == "bool[]") {
-            let values = value;
-            return `[${values.join(", ")}]`;
-        }
-        else if (t == "string") {
-            return `"${value}"`;
-        }
-        else if (t == "string[]") {
-            let values = value;
-            return `[${values.map(v => `"${v}"`).join(", ")}]`;
-        }
-        else if (t == "fk") {
-            return `${value}`;
-        }
-        else if (t == "fk[]") {
-            let values = value;
-            return `[${values.join(", ")}]`;
-        }
-        else if (t == "any") {
-            JSON.stringify(value);
-        }
-        else if (t == "key") {
-            return `${value}`;
-        }
-        throw new Error(`invalid type ${f.name}:<unkown>`);
-    };
-    const getTitle = (v) => {
-        return v.describe.split("\n")[0];
-    };
-    const getDescripts = (v) => {
-        return v.describe.split("\n");
-    };
-    var xxteaKey = "AMhGbf0cnlMCWWviP" + name + "GOK+GK*--s8V2wUd";
-    var keyOffset = "fmrarm";
     var getFieldName = function (n) {
         if (n == "object" || n == "any") {
             return n + "?";
