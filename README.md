@@ -5,7 +5,7 @@
 ### 安装依赖
 
 ```shell
-	npm install -g export-table-pulgin-typescript
+npm install -g export-table-pulgin-typescript
 ```
 
 ### 导表
@@ -15,8 +15,11 @@ quicktable export $配表路径 $导出路径 --tags typescript:ts
 ### 安装依赖
 
 ```shell
-	npm install -g export-table-pulgin-typescript
+npm install -g export-table-pulgin-typescript
 ```
 
 ### 导表
+```shell
 quicktable export $配表路径 $导出路径 --tags typescript:json
+```
+
