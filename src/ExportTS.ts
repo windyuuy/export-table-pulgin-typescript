@@ -203,13 +203,14 @@ export let ${mapName}:{
     /** ${JSON.stringify(o)} */
     ${o[mapfield!.name]}:${RowClass}
 	`)}
-}={} as any`)}
+}={} as any
+`)}
 
 for(let r of tableData){
     ${name} .push(r);
-	${iff(mapfield, () => `
+${iff(mapfield, () => `
     (${mapName} as any)[r. ${mapfield}.name ] =r;
-	`)}
+`)}
 }
 
 export default ${name}
