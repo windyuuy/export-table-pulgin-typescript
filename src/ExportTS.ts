@@ -64,14 +64,14 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 		return t;
 	}
 
-	var getFieldName = function (n: string) {
+	let getFieldName = function (n: string) {
 		if (n == "object" || n == "any") {
 			return n + "?"
 		}
 		return n;
 	}
 
-	var getFieldDefault = function (f: Field): any {
+	let getFieldDefault = function (f: Field): any {
 		let t = f.type
 		if (t == "any") {
 			return "undefined";
@@ -100,7 +100,7 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 		return "undefined"
 	}
 
-	var getFkFieldType = function (field: Field) {
+	let getFkFieldType = function (field: Field) {
 		return tables.find(a => a.name == field.fkTableName)!.fields!.find(a => a.name == field.fkFieldName)!.type
 	}
 
@@ -117,8 +117,10 @@ type key=string;
 type fk=number;
 type bool=boolean;
 
-var fields =[
-${foreach(fields, f => `	"${f.name}",`)}
+let fields =[
+${foreach(fields, f => `
+	"${f.name}",
+`)}
 ]
 
 export class ${RowClass}{
@@ -178,9 +180,9 @@ ${iff(f.type == "fk[]", () => `
 `)}
 }
 
-let ${name}:${RowClass} []=[];
+let ${name}: ${RowClass}[]=[];
 
-var rowData=
+let rowData=
 [
 ${foreach(datas, d => `
 	${JSON.stringify(d)},
@@ -199,7 +201,7 @@ for (let record of rowData) {
 
 ${iff(mapfield, () => `
 export let ${mapName}:{
-	${foreach(objects, o => `
+${foreach(objects, o => `
     /** ${JSON.stringify(o)} */
     ${o[mapfield!.name]}:${RowClass}
 	`)}

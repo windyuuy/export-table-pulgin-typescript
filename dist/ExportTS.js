@@ -95,13 +95,13 @@ function export_stuff(paras) {
         }
         return t;
     };
-    var getFieldName = function (n) {
+    let getFieldName = function (n) {
         if (n == "object" || n == "any") {
             return n + "?";
         }
         return n;
     };
-    var getFieldDefault = function (f) {
+    let getFieldDefault = function (f) {
         let t = f.type;
         if (t == "any") {
             return "undefined";
@@ -138,7 +138,7 @@ function export_stuff(paras) {
         }
         return "undefined";
     };
-    var getFkFieldType = function (field) {
+    let getFkFieldType = function (field) {
         return tables.find(a => a.name == field.fkTableName).fields.find(a => a.name == field.fkFieldName).type;
     };
     let mainField = (_a = fields.find(f => f.type == "uid")) !== null && _a !== void 0 ? _a : fields[0];
@@ -154,8 +154,10 @@ type key=string;
 type fk=number;
 type bool=boolean;
 
-var fields =[
-${(0, export_table_lib_1.foreach)(fields, f => `	"${f.name}",`)}
+let fields =[
+${(0, export_table_lib_1.foreach)(fields, f => `
+	"${f.name}",
+`)}
 ]
 
 export class ${RowClass}{
@@ -215,9 +217,9 @@ ${(0, export_table_lib_1.iff)(f.type == "fk[]", () => `
 `)}
 }
 
-let ${name}:${RowClass} []=[];
+let ${name}: ${RowClass}[]=[];
 
-var rowData=
+let rowData=
 [
 ${(0, export_table_lib_1.foreach)(datas, d => `
 	${JSON.stringify(d)},
@@ -236,7 +238,7 @@ for (let record of rowData) {
 
 ${(0, export_table_lib_1.iff)(mapfield, () => `
 export let ${mapName}:{
-	${(0, export_table_lib_1.foreach)(objects, o => `
+${(0, export_table_lib_1.foreach)(objects, o => `
     /** ${JSON.stringify(o)} */
     ${o[mapfield.name]}:${RowClass}
 	`)}
