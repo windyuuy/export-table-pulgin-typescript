@@ -224,7 +224,7 @@ ${(0, export_table_lib_1.foreach)(datas, d => `
 `)}
 ]
 
-let tableData: any[] = []
+let tableData: ${RowClass}[] = []
 for (let record of rowData) {
     let obj = new ${RowClass} () as any
     for(let i = 0;i<fields.length;i++) {
@@ -240,13 +240,14 @@ export let ${mapName}:{
     /** ${JSON.stringify(o)} */
     ${o[mapfield.name]}:${RowClass}
 	`)}
-}={} as any`)}
+}={} as any
+`)}
 
 for(let r of tableData){
-    ${name} .push(r);
-	${(0, export_table_lib_1.iff)(mapfield, () => `
-    (${mapName} as any)[r. ${mapfield}.name ] =r;
-	`)}
+    ${name}.push(r);
+${(0, export_table_lib_1.iff)(mapfield, () => `
+    (${mapName} as any)[r.${mapfield.name}] = r;
+`)}
 }
 
 export default ${name}

@@ -187,7 +187,7 @@ ${foreach(datas, d => `
 `)}
 ]
 
-let tableData: any[] = []
+let tableData: ${RowClass}[] = []
 for (let record of rowData) {
     let obj = new ${RowClass} () as any
     for(let i = 0;i<fields.length;i++) {
@@ -207,9 +207,9 @@ export let ${mapName}:{
 `)}
 
 for(let r of tableData){
-    ${name} .push(r);
+    ${name}.push(r);
 ${iff(mapfield, () => `
-    (${mapName} as any)[r. ${mapfield}.name ] =r;
+    (${mapName} as any)[r.${mapfield!.name}] = r;
 `)}
 }
 
