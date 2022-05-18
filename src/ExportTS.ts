@@ -154,7 +154,6 @@ ${iff(getFkFieldType(f).toLowerCase() != "uid", () => `
             }
             return this._fk${f.name};
         }
-        }
 `).else(() => `
         protected _fk${f.name}?:${f.fkTableName}Row=undefined
         /**

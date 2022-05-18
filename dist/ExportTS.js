@@ -190,7 +190,6 @@ ${(0, export_table_lib_1.iff)(getFkFieldType(f).toLowerCase() != "uid", () => `
             }
             return this._fk${f.name};
         }
-        }
 `).else(() => `
         protected _fk${f.name}?:${f.fkTableName}Row=undefined
         /**
