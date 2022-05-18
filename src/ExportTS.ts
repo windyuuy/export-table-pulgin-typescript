@@ -104,6 +104,13 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 		return tables.find(a => a.name == field.fkTableName)!.fields!.find(a => a.name == field.fkFieldName)!.type
 	}
 
+	let formatDescribe = function (field: Field, tabCount: number) {
+		let tabs = "    ".repeat(tabCount)
+		let lines = `${field.describe}`.split("\n").map(l => `${tabs + " * " + l}`)
+		let line = tabs + "/**\n" + lines.join("\n") + "\n" + tabs + " **/"
+		return line
+	}
+
 	let mainField: Field = fields.find(f => f.type == "uid") ?? fields[0]
 	let temp = `
 ${foreach(fields, f => `
@@ -182,7 +189,7 @@ ${iff(f.type == "fk[]", () => `
 
 let ${name}: ${RowClass}[]=[];
 
-let rowData=
+let rowData:any[]=
 [
 ${foreach(datas, d => `
 	${JSON.stringify(d)},
@@ -203,7 +210,7 @@ ${iff(mapfield, () => `
 export let ${mapName}:{
 ${foreach(objects, o => `
     /** ${JSON.stringify(o)} */
-    ${o[mapfield!.name]}:${RowClass}
+    ["${o[mapfield!.name]}"]:${RowClass}
 	`)}
 }={} as any
 `)}
@@ -215,6 +222,9 @@ ${iff(mapfield, () => `
 `)}
 }
 
+/**
+ * ${table.nameOrigin}
+ */
 export default ${name}
 `
 	return temp
