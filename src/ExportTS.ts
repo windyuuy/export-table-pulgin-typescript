@@ -24,9 +24,9 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 			return "object"
 		} else if (t == "object[]") {
 			return "object[]"
-		} else if (t == "number") {
+		} else if (t == "number" || t == "int" || t == "long") {
 			return "number";
-		} else if (t == "number[]") {
+		} else if (t == "number[]" || t == "int[]" || t == "long[]") {
 			return "number[]";
 		} else if (t == "uid") {
 			return "uid";
@@ -77,7 +77,7 @@ export function export_stuff(paras: HandleSheetParams): string | null {
 			return "undefined";
 		} else if (t == "uid") {
 			return 0;
-		} else if (t == "number") {
+		} else if (t == "number" || t == "int" || t == "long") {
 			return 0
 		} else if (t == "bool") {
 			return "false"

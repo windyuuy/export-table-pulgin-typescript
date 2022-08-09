@@ -45,10 +45,10 @@ function export_stuff(paras) {
         else if (t == "object[]") {
             return "object[]";
         }
-        else if (t == "number") {
+        else if (t == "number" || t == "int" || t == "long") {
             return "number";
         }
-        else if (t == "number[]") {
+        else if (t == "number[]" || t == "int[]" || t == "long[]") {
             return "number[]";
         }
         else if (t == "uid") {
@@ -109,7 +109,7 @@ function export_stuff(paras) {
         else if (t == "uid") {
             return 0;
         }
-        else if (t == "number") {
+        else if (t == "number" || t == "int" || t == "long") {
             return 0;
         }
         else if (t == "bool") {
